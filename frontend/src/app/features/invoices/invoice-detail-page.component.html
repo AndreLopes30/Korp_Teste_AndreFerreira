@@ -1,0 +1,75 @@
+<div class="detail-toolbar no-print">
+  <a class="back-link" routerLink="/invoices">← Voltar para notas fiscais</a>
+</div>
+
+@if (isLoading) {
+  <div class="card empty-state detail-loading" aria-live="polite"><span class="spinner"></span> Carregando nota fiscal…</div>
+} @else if (invoice) {
+  <article class="invoice-sheet">
+    <header class="invoice-header">
+      <div>
+        <span class="eyebrow">Documento fiscal</span>
+        <h1>Nota fiscal <span>#{{ invoice.number }}</span></h1>
+        <p>Emitida em {{ invoice.createdAtUtc | date:'dd/MM/yyyy HH:mm' }}</p>
+      </div>
+      <div class="invoice-status-block">
+        <small>Status</small>
+        <span class="status large" [class.closed]="invoice.status === 'Closed'">{{ statusLabel(invoice.status) }}</span>
+      </div>
+    </header>
+
+    <section class="invoice-meta">
+      <div><small>Número</small><strong>{{ invoice.number }}</strong></div>
+      <div><small>Quantidade de itens</small><strong>{{ invoice.items.length }}</strong></div>
+      <div>
+        <small>Fechamento</small>
+        <strong>{{ invoice.closedAtUtc ? (invoice.closedAtUtc | date:'dd/MM/yyyy HH:mm') : 'Aguardando processamento' }}</strong>
+      </div>
+    </section>
+
+    <section aria-labelledby="items-title">
+      <div class="section-title">
+        <h2 id="items-title">Itens da nota</h2>
+        <span>Dados preservados no faturamento</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Produto</th><th>Descrição</th><th class="numeric">Quantidade</th></tr></thead>
+          <tbody>
+            @for (item of invoice.items; track item.productId) {
+              <tr>
+                <td><span class="code-chip">{{ item.productCode }}</span></td>
+                <td>{{ item.productDescription }}</td>
+                <td class="numeric"><strong>{{ item.quantity }}</strong></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="invoice-actions no-print">
+      <div class="action-copy">
+        @if (invoice.status === 'Open') {
+          <strong>Pronta para processar</strong>
+          <span>O estoque será baixado antes do fechamento.</span>
+        } @else {
+          <strong>Processamento concluído</strong>
+          <span>Esta nota não pode ser processada novamente.</span>
+        }
+      </div>
+
+      @if (invoice.status === 'Open') {
+        <button class="button primary print-button" type="button" (click)="closeAndPrint()" [disabled]="isClosing">
+          @if (isClosing) { Processando nota… } @else { Imprimir nota fiscal }
+        </button>
+      }
+    </footer>
+  </article>
+}
+
+<div class="detail-feedback no-print" aria-live="polite">
+  @if (feedback) { <p class="alert success">{{ feedback }}</p> }
+  @if (error) { <p class="alert error">{{ error }}</p> }
+</div>

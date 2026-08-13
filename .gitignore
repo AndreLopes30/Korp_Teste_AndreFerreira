@@ -1,0 +1,32 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Angular / Node output
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+
+# SQLite runtime files
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Logs and temporary runtime files
+logs/
+*.log
+*.tmp
+*.temp
+
+# Local editor and operating-system files
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local development overrides
+appsettings.Local.json
+frontend/src/environments/environment.local.ts

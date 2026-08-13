@@ -1,0 +1,91 @@
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">Estoque</span>
+    <h1>Produtos</h1>
+    <p>Cadastre os itens disponíveis e acompanhe o saldo atual.</p>
+  </div>
+  <span class="counter">{{ products.length }} produto(s)</span>
+</section>
+
+<div class="page-grid">
+  <section class="card form-card" aria-labelledby="product-form-title">
+    <div class="card-heading">
+      <span class="step">01</span>
+      <div>
+        <h2 id="product-form-title">Novo produto</h2>
+        <p>Preencha os dados iniciais de estoque.</p>
+      </div>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="code">Código</label>
+        <input id="code" type="text" formControlName="code" maxlength="50" autocomplete="off" placeholder="Ex.: PRD-001">
+        @if (isInvalid('code')) {
+          <small class="field-error">Informe um código com até 50 caracteres.</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="description">Descrição</label>
+        <input id="description" type="text" formControlName="description" maxlength="200" autocomplete="off" placeholder="Ex.: Teclado mecânico">
+        @if (isInvalid('description')) {
+          <small class="field-error">Informe uma descrição com até 200 caracteres.</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="balance">Saldo</label>
+        <input id="balance" type="number" min="0" step="1" formControlName="balance" inputmode="numeric">
+        @if (isInvalid('balance')) {
+          <small class="field-error">O saldo deve ser um número inteiro igual ou maior que zero.</small>
+        }
+      </div>
+
+      <button class="button primary full" type="submit" [disabled]="isSubmitting">
+        @if (isSubmitting) { Cadastrando… } @else { Cadastrar produto }
+      </button>
+    </form>
+
+    <div class="feedback-region" aria-live="polite">
+      @if (feedback) { <p class="alert success">{{ feedback }}</p> }
+      @if (error) { <p class="alert error">{{ error }}</p> }
+    </div>
+  </section>
+
+  <section class="card list-card" aria-labelledby="product-list-title">
+    <div class="card-heading list-heading">
+      <span class="step">02</span>
+      <div>
+        <h2 id="product-list-title">Produtos cadastrados</h2>
+        <p>Saldo disponível para emissão de notas.</p>
+      </div>
+    </div>
+
+    @if (isLoading) {
+      <div class="empty-state" aria-live="polite"><span class="spinner"></span> Carregando produtos…</div>
+    } @else if (products.length === 0) {
+      <div class="empty-state">
+        <strong>Nenhum produto cadastrado</strong>
+        <span>Use o formulário ao lado para começar.</span>
+      </div>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Código</th><th>Descrição</th><th class="numeric">Saldo</th></tr>
+          </thead>
+          <tbody>
+            @for (product of products; track product.id) {
+              <tr>
+                <td><span class="code-chip">{{ product.code }}</span></td>
+                <td>{{ product.description }}</td>
+                <td class="numeric"><strong>{{ product.balance }}</strong></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+</div>

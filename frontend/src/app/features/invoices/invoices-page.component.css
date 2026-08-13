@@ -1,0 +1,43 @@
+.invoice-form-card { margin-bottom: 1.25rem; }
+
+.invoice-items {
+  display: grid;
+  gap: .8rem;
+}
+
+.invoice-item {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 150px auto;
+  gap: 1rem;
+  align-items: end;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+}
+
+.invoice-item legend {
+  padding: 0 .4rem;
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: .8rem;
+  margin-top: 1rem;
+}
+
+.action-cell { text-align: right; }
+.page-loading { min-height: 240px; }
+
+@media (max-width: 760px) {
+  .invoice-item { grid-template-columns: 1fr; }
+  .form-actions { flex-direction: column; }
+  .form-actions .button { width: 100%; }
+}

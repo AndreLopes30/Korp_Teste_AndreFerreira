@@ -1,0 +1,116 @@
+<section class="page-heading">
+  <div>
+    <span class="eyebrow">Faturamento</span>
+    <h1>Notas fiscais</h1>
+    <p>Monte uma nota com um ou mais produtos cadastrados.</p>
+  </div>
+  <span class="counter">{{ invoices.length }} nota(s)</span>
+</section>
+
+@if (isLoading) {
+  <div class="card empty-state page-loading" aria-live="polite"><span class="spinner"></span> Preparando faturamento…</div>
+} @else {
+  <section class="card invoice-form-card" aria-labelledby="invoice-form-title">
+    <div class="card-heading">
+      <span class="step">01</span>
+      <div>
+        <h2 id="invoice-form-title">Nova nota fiscal</h2>
+        <p>Selecione produtos distintos e informe as quantidades.</p>
+      </div>
+    </div>
+
+    @if (products.length === 0) {
+      <p class="alert notice">Cadastre ao menos um produto antes de emitir uma nota fiscal.</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div formArrayName="items" class="invoice-items">
+        @for (row of items.controls; track $index; let index = $index) {
+          <fieldset [formGroupName]="index" class="invoice-item">
+            <legend>Item {{ index + 1 }}</legend>
+
+            <div class="field product-field">
+              <label [for]="'product-' + index">Produto</label>
+              <select [id]="'product-' + index" formControlName="productId">
+                <option [ngValue]="null">Selecione um produto</option>
+                @for (product of products; track product.id) {
+                  <option [ngValue]="product.id">{{ product.code }} — {{ product.description }} (saldo: {{ product.balance }})</option>
+                }
+              </select>
+              @if (rowInvalid(row, 'productId')) {
+                <small class="field-error">Selecione um produto.</small>
+              }
+            </div>
+
+            <div class="field quantity-field">
+              <label [for]="'quantity-' + index">Quantidade</label>
+              <input [id]="'quantity-' + index" type="number" min="1" step="1" inputmode="numeric" formControlName="quantity">
+              @if (rowInvalid(row, 'quantity')) {
+                <small class="field-error">Informe um número inteiro maior que zero.</small>
+              }
+            </div>
+
+            <button class="icon-button" type="button" (click)="removeItem(index)" [disabled]="items.length === 1" [attr.aria-label]="'Remover item ' + (index + 1)">Remover</button>
+          </fieldset>
+        }
+      </div>
+
+      @if (form.hasError('duplicateProducts')) {
+        <p class="alert error">Cada produto pode aparecer apenas uma vez na nota fiscal.</p>
+      }
+
+      <div class="form-actions">
+        <button class="button secondary" type="button" (click)="addItem()" [disabled]="products.length === 0">Adicionar item</button>
+        <button class="button primary" type="submit" [disabled]="isSubmitting || products.length === 0">
+          @if (isSubmitting) { Criando nota… } @else { Criar nota fiscal }
+        </button>
+      </div>
+    </form>
+
+    <div aria-live="polite">
+      @if (feedback) {
+        <p class="alert success">
+          {{ feedback }}
+          @if (createdInvoiceNumber !== null) {
+            <a [routerLink]="['/invoices', createdInvoiceNumber]">Abrir nota</a>
+          }
+        </p>
+      }
+      @if (error) { <p class="alert error">{{ error }}</p> }
+    </div>
+  </section>
+
+  <section class="card invoice-list-card" aria-labelledby="invoice-list-title">
+    <div class="card-heading">
+      <span class="step">02</span>
+      <div>
+        <h2 id="invoice-list-title">Notas emitidas</h2>
+        <p>Acompanhe o processamento de cada documento.</p>
+      </div>
+    </div>
+
+    @if (invoices.length === 0) {
+      <div class="empty-state">
+        <strong>Nenhuma nota fiscal criada</strong>
+        <span>As novas notas aparecerão aqui.</span>
+      </div>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Número</th><th>Criação</th><th>Itens</th><th>Status</th><th><span class="sr-only">Ação</span></th></tr></thead>
+          <tbody>
+            @for (invoice of invoices; track invoice.number) {
+              <tr>
+                <td><strong>#{{ invoice.number }}</strong></td>
+                <td>{{ invoice.createdAtUtc | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ invoice.itemCount }}</td>
+                <td><span class="status" [class.closed]="invoice.status === 'Closed'">{{ statusLabel(invoice.status) }}</span></td>
+                <td class="action-cell"><a class="table-link" [routerLink]="['/invoices', invoice.number]">Ver detalhes</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+}

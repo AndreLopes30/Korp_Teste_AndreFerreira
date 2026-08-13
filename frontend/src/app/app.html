@@ -1,0 +1,25 @@
+<header class="app-header no-print">
+  <div class="header-inner">
+    <a class="brand" routerLink="/products" aria-label="KORP Faturamento - início">
+      <span class="brand-mark">K</span>
+      <span>
+        <strong>KORP</strong>
+        <small>Faturamento & estoque</small>
+      </span>
+    </a>
+
+    <nav aria-label="Navegação principal">
+      <a routerLink="/products" routerLinkActive="active">Produtos</a>
+      <a routerLink="/invoices" routerLinkActive="active">Notas fiscais</a>
+    </nav>
+  </div>
+</header>
+
+<main class="app-main">
+  <router-outlet />
+</main>
+
+<footer class="app-footer no-print">
+  <span>KORP Technical Challenge</span>
+  <span>Estoque e faturamento conectados</span>
+</footer>
