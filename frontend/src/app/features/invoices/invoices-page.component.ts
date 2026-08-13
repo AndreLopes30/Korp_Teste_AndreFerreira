@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize, forkJoin } from 'rxjs';
 import { apiErrorMessage } from '../../core/api/api-error';
@@ -16,6 +16,8 @@ import { Product } from '../../core/models/product.models';
   styleUrl: './invoices-page.component.css'
 })
 export class InvoicesPageComponent implements OnInit {
+  @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
+
   private readonly formBuilder = inject(FormBuilder);
   private readonly productApi = inject(ProductApiService);
   private readonly invoiceApi = inject(InvoiceApiService);
@@ -119,10 +121,13 @@ export class InvoicesPageComponent implements OnInit {
   }
 
   private resetItems(): void {
-    this.items.clear();
-    this.items.push(this.createItemGroup());
-    this.form.markAsPristine();
-    this.form.markAsUntouched();
+    while (this.items.length > 1) {
+      this.items.removeAt(this.items.length - 1);
+    }
+
+    this.formDirective.resetForm({
+      items: [{ productId: null, quantity: 1 }]
+    });
     this.form.updateValueAndValidity();
   }
 
