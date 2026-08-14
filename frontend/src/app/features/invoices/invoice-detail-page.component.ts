@@ -23,6 +23,10 @@ export class InvoiceDetailPageComponent implements OnInit {
   feedback = '';
   error = '';
 
+  get totalQuantity(): number {
+    return this.invoice?.items.reduce((total, item) => total + item.quantity, 0) ?? 0;
+  }
+
   ngOnInit(): void {
     const number = Number(this.route.snapshot.paramMap.get('number'));
     if (!Number.isInteger(number) || number <= 0) {

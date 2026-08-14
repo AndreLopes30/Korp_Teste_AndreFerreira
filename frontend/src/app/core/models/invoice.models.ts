@@ -21,7 +21,7 @@ export interface InvoiceSummary {
   status: InvoiceStatus;
   createdAtUtc: string;
   closedAtUtc: string | null;
-  itemCount: number;
+  totalQuantity: number;
 }
 
 export interface InvoiceDetail {

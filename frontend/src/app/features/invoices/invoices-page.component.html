@@ -97,13 +97,13 @@
     } @else {
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Número</th><th>Criação</th><th>Itens</th><th>Status</th><th><span class="sr-only">Ação</span></th></tr></thead>
+          <thead><tr><th>Número</th><th>Criação</th><th>Quantidade de itens</th><th>Status</th><th><span class="sr-only">Ação</span></th></tr></thead>
           <tbody>
             @for (invoice of invoices; track invoice.number) {
               <tr>
                 <td><strong>#{{ invoice.number }}</strong></td>
                 <td>{{ invoice.createdAtUtc | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td>{{ invoice.itemCount }}</td>
+                <td>{{ invoice.totalQuantity }}</td>
                 <td><span class="status" [class.closed]="invoice.status === 'Closed'">{{ statusLabel(invoice.status) }}</span></td>
                 <td class="action-cell"><a class="table-link" [routerLink]="['/invoices', invoice.number]">Ver detalhes</a></td>
               </tr>

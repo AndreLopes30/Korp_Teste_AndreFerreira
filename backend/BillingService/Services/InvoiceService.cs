@@ -63,7 +63,7 @@ public sealed class InvoiceService(BillingDbContext dbContext, IStockServiceClie
                 invoice.Status,
                 invoice.CreatedAtUtc,
                 invoice.ClosedAtUtc,
-                invoice.Items.Count))
+                invoice.Items.Sum(item => item.Quantity)))
             .ToListAsync(cancellationToken);
 
     public async Task<InvoiceDetailResponse> GetAsync(int number, CancellationToken cancellationToken)

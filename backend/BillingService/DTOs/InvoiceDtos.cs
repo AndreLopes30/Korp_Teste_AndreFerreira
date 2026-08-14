@@ -29,7 +29,7 @@ public sealed record InvoiceSummaryResponse(
     InvoiceStatus Status,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? ClosedAtUtc,
-    int ItemCount);
+    int TotalQuantity);
 
 public sealed record InvoiceDetailResponse(
     int Number,

@@ -20,7 +20,7 @@
 
     <section class="invoice-meta">
       <div><small>Número</small><strong>{{ invoice.number }}</strong></div>
-      <div><small>Quantidade de itens</small><strong>{{ invoice.items.length }}</strong></div>
+      <div><small>Quantidade de itens</small><strong>{{ totalQuantity }}</strong></div>
       <div>
         <small>Fechamento</small>
         <strong>{{ invoice.closedAtUtc ? (invoice.closedAtUtc | date:'dd/MM/yyyy HH:mm') : 'Aguardando processamento' }}</strong>
